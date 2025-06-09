@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,11 +33,16 @@
 </head>
 <body>
   <h2>Atomic Arbitrage Simulator</h2>
-  <button id="connectWalletBtn" onclick="connectWallet()">🔌 Connect Wallet</button><br><br>
+  <button id="connectWalletBtn" onclick="connectWallet()">🔌 Connect Wallet</button>
+  <button onclick="window.location.href='https://metamask.app.link/dapp/fclmail.github.io/pr4/'">📱 Deep Link (Mobile)</button><br><br>
+
+  <div>Wallet Address: <span id="wallet">Not connected</span></div>
+  <div>Wallet USDC Balance: <span id="balance">0</span> USDC</div>
+
   <label>Trade Amount (USDC): <input type="number" id="amount" value="10"></label><br>
   <label>Minimum Profit (USDC): <input type="number" id="minProfit" value="0.1"></label><br>
   <label>Slippage %: <input type="number" id="slippage" value="0.05"></label><br>
-  <div>Wallet USDC Balance: <span id="balance">0</span> USDC</div>
+
   <button onclick="startScan()">▶️ Start Scanning</button>
   <textarea id="log"></textarea>
 
@@ -49,7 +53,7 @@
       let contract;
 
       const contractAddress = "0x98BD86aDa64DC52E60392a43050fad5E9cAcb62F";
-      const contractAbi = [ /* same ABI as before */ ];
+      const contractAbi = [/* CONTRACT ABI TRUNCATED FOR BREVITY – keep your ABI here */];
 
       const routers = {
         quickswap: "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
@@ -69,9 +73,10 @@
         try {
           await provider.send("eth_requestAccounts", []);
           signer = provider.getSigner();
-          const userAddress = await signer.getAddress();
-          log(`🔗 Connected: ${userAddress}`);
-          updateBalance();
+          const address = await signer.getAddress();
+          document.getElementById("wallet").textContent = address;
+          log(`🔗 Connected: ${address}`);
+          await updateBalance();
           contract = new ethers.Contract(contractAddress, contractAbi, signer);
         } catch (err) {
           log("❌ Wallet connection failed: " + err.message);
@@ -144,10 +149,10 @@
         logBox.scrollTop = logBox.scrollHeight;
       }
 
-      // expose to global scope
       window.connectWallet = connectWallet;
       window.startScan = startScan;
     };
   </script>
 </body>
 </html>
+
